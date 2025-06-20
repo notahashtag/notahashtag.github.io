@@ -1,4 +1,4 @@
-import{Oa as f,Pa as l,Qa as s,Ra as g,Sa as w,Ta as c,V as d,Va as x,W as m,Wa as S,Xa as _,Ya as o,Za as h,_a as y,ba as p,oa as a,ya as b}from"./chunk-YRH2RDRP.js";var I=["scrollList"],R=class v{listInput=p("");results=p([]);rolls=p(25);scrollList;randomSelection(){let i=this.listInput().split(`
+import{$a as o,Qa as f,Ra as l,Sa as s,Ta as g,Ua as w,V as d,Va as c,W as m,Ya as x,Za as S,_a as _,ab as h,ba as p,bb as y,oa as a,ya as b}from"./chunk-FWJTHIN5.js";var I=["scrollList"],R=class v{listInput=p("");results=p([]);rolls=p(25);scrollList;randomSelection(){let i=this.listInput().split(`
 `).map(n=>n.trim()).filter(n=>n!=="");if(i.length===0){this.results.set([]);return}let t=1,e=i.length,r=[];for(let n=1;n<=this.rolls();n++){let u=Math.floor(Math.random()*(e-t+1))+t;r.unshift(i[u-1]),this.results.set(r)}setTimeout(()=>{let n=this.scrollList.nativeElement;n.scrollTop=n.scrollHeight})}reset(){this.listInput.set(""),this.results.set([]),this.rolls.set(25)}onListInput(i){let t=i.split(`
 `).map(e=>e.trim()).filter(e=>e!=="").join(`
 `);this.listInput.set(t)}get numberedResults(){return this.results().map((i,t)=>`${t+1}. ${i}`).join(`
