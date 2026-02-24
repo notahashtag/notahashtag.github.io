@@ -1,7 +1,13 @@
 ﻿@page "/bingo"
 
 <div class='row'>
-    @if (!AvailableBoards.Any())
+    @if (IsLoading)
+    {
+        <div class='col mb-4'>
+            <p class='text-info'><strong><i>Loading boards...</i></strong></p>
+        </div>
+    }
+    else if (!AvailableBoards.Any())
     {
         <div class='col mb-4'>
             <p class='text-danger'><strong><i>No boards configured!</i></strong></p>
@@ -57,6 +63,7 @@
 
     private Dictionary<string, string[]> AvailableBoards = new();
     private List<Tile> GameBoard = new();
+    private bool IsLoading = true;
     private string SelectedBoard = string.Empty;
     private List<string> SkippedBoards = new();
 
@@ -109,6 +116,7 @@
     protected override async Task OnInitializedAsync()
     {
         await LoadFile();
+        IsLoading = false;
         if (AvailableBoards.Count == 1)
         {
             SelectedBoard = AvailableBoards.Keys.First();
