@@ -1,0 +1,71 @@
+﻿@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+
+<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">#octothorpe</a>
+        <div class="d-flex">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="themeToggle" @bind-value="isLight" @bind-value:after="OnThemeChanged" />
+                <label class="form-check-label" for="themeToggle">
+                    <i class="bi @themeIcon text-white"></i>
+                </label>
+            </div>
+            <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
+    <nav class="nav flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="bingo">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Bingo
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="random-selection">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Random Selection
+            </NavLink>
+        </div>
+    </nav>
+</div>
+
+@inject IJSRuntime JSRuntime
+
+@code {
+    private bool collapseNavMenu = true;
+    private bool isDark = true;
+    private bool isLight { get => !isDark; set => isDark = !value; }
+    private string themeIcon => isLight ? "bi-sun-fill" : "bi-moon-fill";
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var theme = await JSRuntime.InvokeAsync<string>("getTheme");
+            isDark = theme == "dark";
+            StateHasChanged();
+        }
+    }
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    private async Task OnThemeChanged()
+    {
+        await JSRuntime.InvokeVoidAsync("setTheme", isLight);
+        StateHasChanged();
+    }
+}

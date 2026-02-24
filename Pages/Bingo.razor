@@ -1,0 +1,150 @@
+﻿@page "/bingo"
+
+<h3 class='mb-4'>Bingo</h3>
+
+<div class='row'>
+    @if (!AvailableBoards.Any())
+    {
+        <div class='col mb-4'>
+            <p class='text-danger'><strong><i>No boards configured!</i></strong></p>
+        </div>
+    }
+    else
+    {
+        <div class='col-auto mb-4'>
+            <select id='selectedBoard' class='form-select' @bind="SelectedBoard" @bind:after="GenerateBoard">
+                @if (AvailableBoards.Count > 1)
+                {
+                    <option value=''>Select Board...</option>
+                }
+                @foreach (string board in AvailableBoards.Keys)
+                {
+                    <option value='@board'>@board</option>
+                }
+            </select>
+        </div>
+        @if (!string.IsNullOrWhiteSpace(SelectedBoard))
+        {
+            <div class='col-auto mb-4'>
+                <button class='btn btn-primary' @onclick="GenerateBoard">Shuffle</button>
+            </div>
+            <div class='col-auto mb-4'>
+                <button class='btn btn-outline-danger' @onclick="ResetBoard">Reset</button>
+            </div>
+        }
+    }
+</div>
+@if (!string.IsNullOrWhiteSpace(SelectedBoard))
+{
+    <div class='row mb-4 pt-4'>
+        <div class='col'>
+            <div id='gameBoard' class="border p-2 bingo-board">
+                <div class="text-center mb-2"><i>Bingo Card</i> - <strong>@SelectedBoard</strong></div>
+
+                <div class="d-grid gap-2" style="grid-template-columns: repeat(5, 1fr);">
+                    @foreach (var tile in GameBoard)
+                    {
+                        <div class="border bingo-tile @GetTileClass(tile)" @onclick="() => ToggleTile(tile)">
+                            @tile.Text
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Inject] private HttpClient Http { get; set; } = default!;
+
+    private Dictionary<string, string[]> AvailableBoards = new();
+    private List<Tile> GameBoard = new();
+    private string SelectedBoard = string.Empty;
+    private List<string> SkippedBoards = new();
+
+    private void GenerateBoard()
+    {
+        if (string.IsNullOrWhiteSpace(SelectedBoard) ||
+            !AvailableBoards.TryGetValue(SelectedBoard, out var tiles))
+            return;
+
+        var shuffled = tiles.OrderBy(_ => Random.Shared.Next()).Take(25).ToList();
+        GameBoard = shuffled
+            .Select((t, i) => new Tile
+            {
+                Text = t,
+                IsMarked = false
+            })
+            .ToList();
+
+        GameBoard[12] = new Tile { Text = "Free", IsMarked = true };
+    }
+
+    private string GetTileClass(Tile tile)
+    {
+        return tile.IsMarked ? "bg-info text-dark" : "";
+    }
+
+    private async Task LoadFile()
+    {
+        var fileContents = await Http.GetFromJsonAsync<List<BingoBoard>>("data/bingo.json");
+        if (fileContents is not null)
+        {
+            AvailableBoards = fileContents
+                .Where(board =>
+                {
+                    bool valid = board.Tiles.Length >= 24;
+                    if (!valid)
+                    {
+                        SkippedBoards.Add(board.Title);
+                    }
+                    return valid;
+                })
+                .ToDictionary(x => x.Title, x => x.Tiles);
+        }
+        if (SkippedBoards.Any())
+        {
+            Console.WriteLine("Skipped boards (less than 24 tiles): {0}", string.Join(", ",SkippedBoards));
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadFile();
+        if (AvailableBoards.Count == 1)
+        {
+            SelectedBoard = AvailableBoards.Keys.First();
+            GenerateBoard();
+        }
+    }
+
+    private void ResetBoard()
+    {
+        foreach (Tile tile in GameBoard)
+        {
+            tile.IsMarked = false;
+        }
+        GameBoard[12].IsMarked = true;
+    }
+
+    private void ToggleTile(Tile tile)
+    {
+        tile.IsMarked = !tile.IsMarked;
+    }
+
+    #region Classes
+
+    private class BingoBoard
+    {
+        public string Title { get; set; } = string.Empty;
+        public string[] Tiles { get; set; } = Array.Empty<string>();
+    }
+
+    private class Tile
+    {
+        public string Text { get; set; } = string.Empty;
+        public bool IsMarked { get; set; } = false;
+    }
+
+    #endregion
+}
