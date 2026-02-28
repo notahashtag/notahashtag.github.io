@@ -82,7 +82,7 @@
             })
             .ToList();
 
-        GameBoard[12] = new Tile { Text = "Free", IsMarked = true };
+        GameBoard.Insert(12, new Tile { Text = "Free", IsMarked = true });
     }
 
     private string GetTileClass(Tile tile)
