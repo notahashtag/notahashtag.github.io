@@ -73,7 +73,7 @@
             !AvailableBoards.TryGetValue(SelectedBoard, out var tiles))
             return;
 
-        var shuffled = tiles.OrderBy(_ => Random.Shared.Next()).Take(25).ToList();
+        var shuffled = tiles.OrderBy(_ => Random.Shared.Next()).Take(24).ToList();
         GameBoard = shuffled
             .Select((t, i) => new Tile
             {
@@ -154,3 +154,4 @@
 
     #endregion
 }
+
