@@ -1,48 +1,48 @@
 ﻿@page "/bingo"
 
-<div class='row'>
+<div class="row">
     @if (IsLoading)
     {
-        <div class='col mb-4'>
-            <p class='text-info'><strong><i>Loading boards...</i></strong></p>
+        <div class="col mb-4">
+            <p class="text-info"><strong><i>Loading boards...</i></strong></p>
         </div>
     }
     else if (!AvailableBoards.Any())
     {
-        <div class='col mb-4'>
-            <p class='text-danger'><strong><i>No boards configured!</i></strong></p>
+        <div class="col mb-4">
+            <p class="text-danger"><strong><i>No boards configured!</i></strong></p>
         </div>
     }
     else
     {
-        <div class='col-auto mb-4'>
-            <select id='selectedBoard' class='form-select' @bind="SelectedBoard" @bind:after="GenerateBoard">
+        <div class="col-auto mb-4">
+            <select id="selectedBoard" class="form-select" @bind="SelectedBoard" @bind:after="GenerateBoard">
                 @if (AvailableBoards.Count > 1)
                 {
-                    <option value=''>Select Board...</option>
+                    <option value="">Select Board...</option>
                 }
                 @foreach (string board in AvailableBoards.Keys)
                 {
-                    <option value='@board'>@board</option>
+                    <option value="@board">@board</option>
                 }
             </select>
         </div>
         @if (!string.IsNullOrWhiteSpace(SelectedBoard))
         {
-            <div class='col-auto mb-4'>
-                <button class='btn btn-primary' @onclick="GenerateBoard">Shuffle</button>
+            <div class="col-auto mb-4">
+                <button class="btn btn-primary" @onclick="GenerateBoard">Shuffle</button>
             </div>
-            <div class='col-auto mb-4'>
-                <button class='btn btn-outline-danger' @onclick="ResetBoard">Reset</button>
+            <div class="col-auto mb-4">
+                <button class="btn btn-outline-danger" @onclick="ResetBoard">Reset</button>
             </div>
         }
     }
 </div>
 @if (!string.IsNullOrWhiteSpace(SelectedBoard))
 {
-    <div class='row mb-4 pt-4'>
-        <div class='col'>
-            <div id='gameBoard' class="border p-2 bingo-board">
+    <div class="row mb-4 pt-4">
+        <div class="col">
+            <div id="gameBoard" class="border p-2 bingo-board">
                 <div class="text-center mb-2"><i>Bingo Card</i> - <strong>@SelectedBoard</strong></div>
 
                 <div class="d-grid gap-2" style="grid-template-columns: repeat(5, 1fr);">

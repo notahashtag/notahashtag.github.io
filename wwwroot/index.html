@@ -31,17 +31,17 @@
     </div>
     <script>
         function setTheme(isLight) {
-            const theme = isLight ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-bs-theme', theme);
-            localStorage.setItem('theme', theme);
+            const theme = isLight ? "light" : "dark";
+            document.documentElement.setAttribute("data-bs-theme", theme);
+            localStorage.setItem("theme", theme);
         }
         function getTheme() {
-            return document.documentElement.getAttribute('data-bs-theme') || 'dark';
+            return document.documentElement.getAttribute("data-bs-theme") || "dark";
         }
-        window.addEventListener('load', () => {
-            localStorage.removeItem('theme'); // Reset to default dark
-            const savedTheme = 'dark';
-            document.documentElement.setAttribute('data-bs-theme', savedTheme);
+        window.addEventListener("load", () => {
+            localStorage.removeItem("theme"); // Reset to default dark
+            const savedTheme = "dark";
+            document.documentElement.setAttribute("data-bs-theme", savedTheme);
         });
     </script>
     <script src="_framework/blazor.webassembly#[.{fingerprint}].js"></script>

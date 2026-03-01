@@ -1,0 +1,135 @@
+﻿@page "/pokemon"
+@using System.Text.Json.Nodes
+@using System.Text.Json
+@using System.Text.Json.Serialization
+
+<div class="col text-center">
+    <h3 class="mb-4">Who's That Pokémon?</h3>
+
+    @if (IsPageLoading)
+    {
+        <h3>Loading...</h3>
+    }
+    else if (!PokemonList.Any())
+    {
+        <p class="text-danger">Error loading from <a class="text-danger" href="https://pokeapi.co/">PokeAPI</a></p>
+    }
+    else
+    {
+        @if (IsImageLoading)
+        {
+            <span class='text-info'>Catching next pokemon...</span>
+        }
+
+        <p class="mb-4"><button @onclick="TogglePokemon" class="btn btn-primary" hidden="@IsImageLoading">@ButtonText</button></p>
+
+        <img @key="PokemonKey"
+            src="@CurrentPokemon?["sprites"]?["front_default"]"
+            class="@PokemonStyle w-100 mb-4"
+            @onload="ImageHasLoaded"
+            @onerror="ImageHasLoaded"
+            hidden="@IsImageLoading"/>
+
+        @if (IsRevealed)
+        {
+            <h3><span class="text-capitalize badge text-bg-info rounded-pill">@GetSpeciesName()</span></h3>
+        }
+    }
+</div>
+
+<div class="card fixed-bottom mx-2 mb-2">
+    <div class="card-body text-muted">
+        <div class="container text-center">
+            <span class="small">
+                Data and sprites provided by <a href="https://pokeapi.co/" target="_blank">PokéAPI</a>.
+            </span><br />
+            <span style="font-size: 0.75rem;">
+                All Pokémon content is property of &copy; Nintendo, Game Freak, and The Pokémon Company.
+            </span>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Inject] private HttpClient Http { get; set; } = default!;
+
+    public sealed record PokemonBrief(
+        [property: JsonPropertyName("name")] string Name,
+        [property: JsonPropertyName("url")]string Url
+    );
+
+    private JsonNode? CurrentPokemon;
+    private PokemonBrief[] PokemonList = Array.Empty<PokemonBrief>();
+    private PokemonBrief? PreviousPokemonBrief = null;
+    private bool IsImageLoading = false;
+    private bool IsPageLoading = true;
+    private bool IsRevealed = false;
+    private string ButtonText = "Reveal";
+    private string PokemonStyle = "pokemon-silhouette";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        var jsonNode = await Http.GetFromJsonAsync<JsonNode>($"https://pokeapi.co/api/v2/pokemon/?limit=10000");
+        PokemonList = jsonNode?["results"]?.Deserialize<PokemonBrief[]>(options) ?? Array.Empty<PokemonBrief>();
+        await LoadPokemon();
+        IsPageLoading = false;
+    }
+
+    private string GetSpeciesName()
+    {
+        return CurrentPokemon?["species"]?["name"]?.ToString() ?? "";
+    }
+
+    private void ImageHasLoaded()
+    {
+        IsImageLoading = false;
+        StateHasChanged();
+    }
+
+    private async Task LoadPokemon()
+    {
+        if (PokemonList.Any())
+        {
+            IsImageLoading = true;
+            PokemonBrief? next = null;
+            while (next is null)
+            {
+                int random = Random.Shared.Next(minValue: 1, maxValue: PokemonList.Length);
+                next = PokemonList[random];
+                if (next.Name == CurrentPokemon?["name"]?.GetValue<string>())
+                {
+                    next = null;
+                }
+            }
+            if (next is not null && !string.IsNullOrWhiteSpace(next?.Url))
+            {
+                CurrentPokemon = await Http.GetFromJsonAsync<JsonNode>($"{next?.Url}");
+                PreviousPokemonBrief = next;
+                Console.WriteLine(CurrentPokemon?["sprites"]?["front_default"]);
+            }
+        }
+    }
+
+    private string PokemonKey => CurrentPokemon?["id"]?.ToString() ?? "loading";
+
+    private async Task TogglePokemon()
+    {
+        if (IsRevealed) // User clicked "Next"
+        {
+            IsRevealed = false;
+            ButtonText = "Reveal";
+            PokemonStyle = "pokemon-silhouette";
+            
+            // IMPORTANT: Start loading state BEFORE fetching data
+            IsImageLoading = true; 
+            await LoadPokemon();
+        }
+        else // User clicked "Reveal"
+        {
+            IsRevealed = true;
+            ButtonText = "Next";
+            PokemonStyle = "pokemon-revealed";
+        }
+    }
+}

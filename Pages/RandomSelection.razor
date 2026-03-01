@@ -1,42 +1,43 @@
 ﻿@page "/random-selection"
 
-<div class='container'>
-    <div class='row'>
-        <div class='col-md-6 mb-4'>
-            <label for='input' class='form-label'>List Input <i>(1 per line)</i></label>
-            <textarea id='input' class='form-control' rows='8'
-                @bind='InputText' @bind:event="oninput"></textarea>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <label for="input" class="form-label">List Input <i>(1 per line)</i></label>
+            <textarea id="input" class="form-control" rows="8"
+                @bind="InputText" @bind:event="oninput"></textarea>
         </div>
-        <div class='col-md-6 mb-4'>
-            <label for='results' class='form-label'>Results</label>
-            <textarea id='results' class='form-control' rows='8' readonly
+        <div class="col-md-6 mb-4">
+            <label for="results" class="form-label">Results</label>
+            <textarea id="results" class="form-control" rows="8" readonly
                 >@ResultsList</textarea>
         </div>
     </div>
-    <div class='row'>
-        <div class='col-md-6 mb-4'>
-            <label for='rolls' class='form-label'>Number of Rolls: @Rolls</label>
-            <input id='rolls' type='range' min='1' max='50' class='form-range' @bind-value="Rolls" @bind-value:event="oninput" />
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <label for="rolls" class="form-label">Number of Rolls: @Rolls</label>
+            <input id="rolls" type="range" min="1" max="50" class="form-range"
+                @bind-value="Rolls" @bind-value:event="oninput" />
         </div>
-        <div class='col-md-6 mb-4 text-center'>
+        <div class="col-md-6 mb-4 text-center">
             @if (Winner is not null)
             {
                 <h4>
-                    <span class='badge text-bg-info text-wrap'>
-                        <span class='badge text-bg-secondary'>@Winner.Split(". ").First()</span>
+                    <span class="badge text-bg-info text-wrap">
+                        <span class="badge text-bg-secondary">@Winner.Split(". ").First()</span>
                         @Winner.Split(". ").Last()
                     </span>
                 </h4>
             }
         </div>
     </div>
-    <div class='row \'>
-        <div class='col-md-6 mb-4'>
-            <button class='btn btn-primary' @onclick='CleanAndRandomize'
-                disabled='@string.IsNullOrWhiteSpace(InputText)'>Randomized Selection</button>
-            <button class='btn btn-secondary float-end' @onclick="Reset">Reset</button>
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <button class="btn btn-primary" @onclick="CleanAndRandomize"
+                disabled="@string.IsNullOrWhiteSpace(InputText)"">Randomized Selection</button>
+            <button class="btn btn-secondary float-end" @onclick="Reset">Reset</button>
         </div>
-        <div class='col-md-6 mb-4'>
+        <div class="col-md-6 mb-4">
             <span></span>
         </div>
     </div>
