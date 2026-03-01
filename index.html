@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Octothorpe</title>
     <base href="/" />
-    <link href="_framework/dotnet.a8377f0dk3.js" rel="preload" as="script" fetchpriority="high" crossorigin="anonymous" integrity="sha256-Gk8BL4p277wOvprEMGNsTU48M3O/kzhemUL6Cc/PZ3Q=" />
+    <link href="_framework/dotnet.5izo0rx37v.js" rel="preload" as="script" fetchpriority="high" crossorigin="anonymous" integrity="sha256-QxrAAGMKgDKHChEbLuJxoSIPrrexOI3u8vreeu36hsw=" />
     <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
     <link rel="stylesheet" href="css/app.css" />
@@ -15,7 +15,7 @@
     <script type="importmap">{
   "imports": {
     "./_framework/blazor.webassembly.js": "./_framework/blazor.webassembly.66stpp682q.js",
-    "./_framework/dotnet.js": "./_framework/dotnet.a8377f0dk3.js",
+    "./_framework/dotnet.js": "./_framework/dotnet.5izo0rx37v.js",
     "./_framework/dotnet.native.js": "./_framework/dotnet.native.69poregybn.js",
     "./_framework/dotnet.runtime.js": "./_framework/dotnet.runtime.q5rqv3xrhm.js"
   },
@@ -23,8 +23,8 @@
   "integrity": {
     "./_framework/blazor.webassembly.66stpp682q.js": "sha256-3lCWrko3zwspV40aQhs2S/IMkRSarnHRKIdkHhuXIBA=",
     "./_framework/blazor.webassembly.js": "sha256-3lCWrko3zwspV40aQhs2S/IMkRSarnHRKIdkHhuXIBA=",
-    "./_framework/dotnet.a8377f0dk3.js": "sha256-Gk8BL4p277wOvprEMGNsTU48M3O/kzhemUL6Cc/PZ3Q=",
-    "./_framework/dotnet.js": "sha256-Gk8BL4p277wOvprEMGNsTU48M3O/kzhemUL6Cc/PZ3Q=",
+    "./_framework/dotnet.5izo0rx37v.js": "sha256-QxrAAGMKgDKHChEbLuJxoSIPrrexOI3u8vreeu36hsw=",
+    "./_framework/dotnet.js": "sha256-QxrAAGMKgDKHChEbLuJxoSIPrrexOI3u8vreeu36hsw=",
     "./_framework/dotnet.native.69poregybn.js": "sha256-JvdIvkSF0x6euoPT2QnQSMg2Gyv2oJbFeBi1XmWLYFU=",
     "./_framework/dotnet.native.js": "sha256-JvdIvkSF0x6euoPT2QnQSMg2Gyv2oJbFeBi1XmWLYFU=",
     "./_framework/dotnet.runtime.js": "sha256-ArknccFM1sHNVcih0x1h52AG+abNCoQjl6BlVrv3ePw=",
@@ -49,17 +49,17 @@
     </div>
     <script>
         function setTheme(isLight) {
-            const theme = isLight ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-bs-theme', theme);
-            localStorage.setItem('theme', theme);
+            const theme = isLight ? "light" : "dark";
+            document.documentElement.setAttribute("data-bs-theme", theme);
+            localStorage.setItem("theme", theme);
         }
         function getTheme() {
-            return document.documentElement.getAttribute('data-bs-theme') || 'dark';
+            return document.documentElement.getAttribute("data-bs-theme") || "dark";
         }
-        window.addEventListener('load', () => {
-            localStorage.removeItem('theme'); // Reset to default dark
-            const savedTheme = 'dark';
-            document.documentElement.setAttribute('data-bs-theme', savedTheme);
+        window.addEventListener("load", () => {
+            localStorage.removeItem("theme"); // Reset to default dark
+            const savedTheme = "dark";
+            document.documentElement.setAttribute("data-bs-theme", savedTheme);
         });
     </script>
     <script src="_framework/blazor.webassembly.66stpp682q.js"></script>
