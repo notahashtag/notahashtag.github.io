@@ -1,0 +1,80 @@
+﻿@page "/tarot"
+
+<h3 class="mb-4">Tarot</h3>
+
+<div class="row">
+    <div class="col mb-4">
+        <button class="btn btn-primary me-4" @onclick="() => GetCards(1)">1 Card</button>
+        <button class="btn btn-primary me-4" @onclick="() => GetCards(3)">3 Card</button>
+    </div>
+</div>
+<div class="row"><span class="@statusClass">@status</span></div>
+@if (cardList is not null && cardList.Cards is not null)
+{
+    <div class="row row-cols-1 row-cols-md-3">
+        @foreach (Card card in cardList.Cards)
+        {
+            <div class="col">
+                <div class="card mb-4">
+                    <h5 class="card-header">
+                        @card.Name
+                    </h5>
+                    <div class="card-body">
+                        <p class="card-text">
+                            @GetCardMeaning(card)
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<div class="card fixed-bottom mx-2 mb-2">
+    <div class="card-body text-muted">
+        <div class="container text-center">
+            <span class="small">
+                Data provided by <a href="@baseUrl" target="_blank">Tarot API</a>.
+            </span>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Inject] private HttpClient Http { get; set; } = default!;
+
+    private readonly string baseUrl = "https://tarotapi.dev/";
+    public CardList? cardList = new();
+    public string cardMeaning = string.Empty;
+    public string status = string.Empty;
+    public string statusClass = string.Empty;
+
+    public async Task GetCards(int numberOfCards)
+    {
+        cardList = null;
+        status = string.Empty;
+        statusClass = string.Empty;
+
+        try
+        {
+            cardList = await Http.GetFromJsonAsync<CardList>(baseUrl + "api/v1/cards/random?n=" + numberOfCards);
+            // if (numberOfCards == 1)
+            // {
+            //     cardList?.Cards?.Prepend(null);
+            //     cardList?.Cards?.Append(null);
+            // }
+        }
+        catch (Exception ex)
+        {
+            status = "Error fetching cards. Please try again.";
+            statusClass = "text-danger";
+            Console.WriteLine($"Error fetching cards: {ex.Message}");
+        }
+    }
+
+    public string GetCardMeaning(Card? card)
+    {
+        if (card is null) return string.Empty;
+        return (Random.Shared.Next(2) == 0) ? card.MeaningDown : card.MeaningUp;
+    }
+}
