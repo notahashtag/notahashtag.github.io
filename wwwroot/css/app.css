@@ -149,7 +149,7 @@ code {
 .pokemon-silhouette {
     filter: brightness(0) drop-shadow(0 0 2px rgba(0,0,0,0.5));
     transition: filter 0.3s ease; /* Smoothly transition if you reveal it later */
-    max-height: 300;
+    max-height: 300px;
     max-width: 300px;
 }
 
